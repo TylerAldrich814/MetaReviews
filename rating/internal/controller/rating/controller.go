@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/TylerAldrich/MetaMovies/rating/internal/repository"
-	"github.com/TylerAldrich/MetaMovies/rating/pkg/model"
+	"github.com/TylerAldrich814/MetaMovies/rating/internal/repository"
+	"github.com/TylerAldrich814/MetaMovies/rating/pkg/model"
 )
 
 type ratingRepository = interface {

@@ -1,4 +1,4 @@
-module github.com/TylerAldrich/MetaMovies/rating
+module github.com/TylerAldrich814/MetaMovies/rating
 
 go 1.23.4
 

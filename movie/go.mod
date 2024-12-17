@@ -1,4 +1,4 @@
-module github.com/TylerAldrich/MetaMovies/movie
+module github.com/TylerAldrich814/MetaMovies/movie
 
 go 1.23.4
 

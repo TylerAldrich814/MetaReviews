@@ -3,8 +3,8 @@ package memory
 import (
 	"context"
 
-	"github.com/TylerAldrich/MetaMovies/rating/internal/repository"
-	"github.com/TylerAldrich/MetaMovies/rating/pkg/model"
+	"github.com/TylerAldrich814/MetaMovies/rating/internal/repository"
+	"github.com/TylerAldrich814/MetaMovies/rating/pkg/model"
 )
 
 // Repository defines a rating repository.

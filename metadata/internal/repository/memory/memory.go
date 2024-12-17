@@ -4,8 +4,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/TylerAldrich/MetaMovies/metadata/internal/repository"
-	"github.com/TylerAldrich/MetaMovies/metadata/pkg/model"
+	"github.com/TylerAldrich814/MetaMovies/metadata/internal/repository"
+	"github.com/TylerAldrich814/MetaMovies/metadata/pkg/model"
 )
 
 // Repository defined a memory movie metadata repository

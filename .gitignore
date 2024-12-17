@@ -2,3 +2,5 @@
 .env
 /**/*/.env
 /**/*/go.sum
+/**/*/tmp
+/**/*/.air.toml

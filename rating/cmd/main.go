@@ -3,11 +3,11 @@ package main
 import (
 	"log"
 
-	"github.com/TylerAldrich/MetaMovies/common"
-	"github.com/TylerAldrich/MetaMovies/common/endpoint"
-	"github.com/TylerAldrich/MetaMovies/rating/internal/controller/rating"
-	httphandler "github.com/TylerAldrich/MetaMovies/rating/internal/handler/http"
-	"github.com/TylerAldrich/MetaMovies/rating/internal/repository/memory"
+	"github.com/TylerAldrich814/MetaMovies/common"
+	"github.com/TylerAldrich814/MetaMovies/common/endpoint"
+	"github.com/TylerAldrich814/MetaMovies/rating/internal/controller/rating"
+	httphandler "github.com/TylerAldrich814/MetaMovies/rating/internal/handler/http"
+	"github.com/TylerAldrich814/MetaMovies/rating/internal/repository/memory"
 
 	_ "github.com/joho/godotenv/autoload"
 )

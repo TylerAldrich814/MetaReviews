@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/TylerAldrich/MetaMovies/common"
-	"github.com/TylerAldrich/MetaMovies/common/endpoint"
-	"github.com/TylerAldrich/MetaMovies/metadata/internal/controller/metadata"
-	httphandler "github.com/TylerAldrich/MetaMovies/metadata/internal/handler/http"
-	"github.com/TylerAldrich/MetaMovies/metadata/internal/repository/memory"
+	"github.com/TylerAldrich814/MetaMovies/common"
+	"github.com/TylerAldrich814/MetaMovies/common/endpoint"
+	"github.com/TylerAldrich814/MetaMovies/metadata/internal/controller/metadata"
+	httphandler "github.com/TylerAldrich814/MetaMovies/metadata/internal/handler/http"
+	"github.com/TylerAldrich814/MetaMovies/metadata/internal/repository/memory"
 
 	_ "github.com/joho/godotenv/autoload"
 )
