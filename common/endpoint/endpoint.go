@@ -8,14 +8,14 @@ const (
   MovieEndpoint
 )
 var epToString = map[Endpoint]string{
-  MetadataEndpoint : "/metadata",
-  RatingEndpoint   : "/rating",
-  MovieEndpoint    : "/movie",
+  MetadataEndpoint : "metadata",
+  RatingEndpoint   : "rating",
+  MovieEndpoint    : "movie",
 }
 var epFromString = map[string]Endpoint {
-  "/metadata" : MetadataEndpoint,
-  "/rating"   : RatingEndpoint,
-  "/movie"    : MovieEndpoint,
+  "metadata" : MetadataEndpoint,
+  "rating"   : RatingEndpoint,
+  "movie"    : MovieEndpoint,
 }
 
 // Converts an Endpoint into it's string equivalent

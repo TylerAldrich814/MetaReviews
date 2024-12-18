@@ -12,38 +12,38 @@ import (
 // Service Instance Health Check interval should last.
 const HealthCheckInterval = 5 * time.Second
 
-// InstanceID - The ID of specific service instance.
-type InstanceID  string
-// ServiceName - The Name of specific service instance.
-type ServiceName string
+// // string - The ID of specific service instance.
+// type InstanceID string
+// // string - The Name of specific service instance.
+// type ServiceName string
 
 // Registry defines a service registry.
 type Registry interface {
   // Register creates a service instance record in the registry,
   Register(
     ctx         context.Context, 
-    instanceID  InstanceID, 
-    serviceName ServiceName, 
-    hostPort string,
+    instanceID  string, 
+    serviceName string, 
+    hostPort    string,
   ) error
 
   // Deregister removes a service instance record from the registry.
   Deregister(
     ctx         context.Context, 
-    instanceID  InstanceID, 
-    serviceName ServiceName,
+    instanceID  string, 
+    serviceName string,
   ) error
 
   // ServiceAddresses returns the list of addresses of active instances of the given service id.
   ServiceAddresses(
-    ctx context.Context, 
-    serviceName ServiceName,
+    ctx         context.Context, 
+    serviceName string,
   )( []string, error)
 
   // ReportHealthyState is a mechanism for reporting the health status of the given instance to the registry.
   ReportHealthyState(
-    instanceID  InstanceID, 
-    serviceName ServiceName,
+    instanceID  string, 
+    serviceName string,
   ) error
 }
 
@@ -55,7 +55,7 @@ var (
   ErrInvalidHostPort       = errors.New("the provided hostPort address is incorrectly formatted")
 )
 
-// GenerateInstanceID generates a pseudo-random service instance identifier, using a service name
+// Generatestring generates a pseudo-random service instance identifier, using a service name
 // suffixed by a dash and a random number.
 func GenerateInstanceID(serviceName string) string {
   return fmt.Sprintf(

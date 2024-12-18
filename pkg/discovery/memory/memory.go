@@ -8,7 +8,7 @@ import (
   "github.com/TylerAldrich814/MetaMovies/pkg/discovery"
 )
 
-type InMemoryRegistry = map[discovery.ServiceName]map[discovery.InstanceID]*serviceInstance
+type InMemoryRegistry = map[string]map[string]*serviceInstance
 
 type serviceInstance struct {
   hostPort   string
@@ -25,7 +25,6 @@ type Registry struct {
   serviceAddrs InMemoryRegistry
 }
 
-
 // NewRegistry creates a new in-memory registry.
 func NewRegistry() *Registry {
   return &Registry{
@@ -36,15 +35,15 @@ func NewRegistry() *Registry {
 // Register creates a service record in the registry
 func(r *Registry) Register(
   ctx         context.Context,
-  instanceID  discovery.InstanceID,
-  serviceName discovery.ServiceName,
+  instanceID  string,
+  serviceName string,
   hostPort    string,
 ) error {
   r.Lock()
   defer r.Unlock()
 
   if _, ok := r.serviceAddrs[serviceName]; !ok {
-    r.serviceAddrs[serviceName] = map[discovery.InstanceID]*serviceInstance{}
+    r.serviceAddrs[serviceName] = map[string]*serviceInstance{}
   }
   r.serviceAddrs[serviceName][instanceID] = &serviceInstance{
     hostPort   : hostPort,
@@ -57,8 +56,8 @@ func(r *Registry) Register(
 // Deregister removes a service record from the registry.
 func(r *Registry) Deregister(
   ctx         context.Context,
-  instanceID  discovery.InstanceID,
-  serviceName discovery.ServiceName,
+  instanceID  string,
+  serviceName string,
 ) error {
   r.Lock()
   defer r.Unlock()
@@ -78,7 +77,7 @@ func(r *Registry) Deregister(
 // 'HealthCheckInterval' seconds
 func(r *Registry) ServiceAddresses(
   ctx         context.Context, 
-  serviceName discovery.ServiceName,
+  serviceName string,
 )( []string, error) {
   r.Lock()
   defer r.Unlock()
@@ -103,8 +102,8 @@ func(r *Registry) ServiceAddresses(
 
 // ReportHealthyState Reports the health state of a given Registry.
 func(r *Registry) ReportHealthyState(
-  instanceID  discovery.InstanceID, 
-  serviceName discovery.ServiceName,
+  instanceID  string, 
+  serviceName string,
 ) error {
   r.Lock()
   defer r.Unlock()

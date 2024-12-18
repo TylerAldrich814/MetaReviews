@@ -32,8 +32,8 @@ func NewRegistry(addr string)( *Registry, error ){
 // Register creates a service revord in the consul-based registry.
 func(r *Registry) Register(
   ctx         context.Context, 
-  instanceID  discovery.InstanceID, 
-  serviceName discovery.ServiceName, 
+  instanceID  string, 
+  serviceName string, 
   hostPort string,
 ) error {
   parts := strings.Split(hostPort, ":")
@@ -48,11 +48,11 @@ func(r *Registry) Register(
   return r.client.Agent().ServiceRegister(
     &consul.AgentServiceRegistration{
       Address : parts[0],
-      ID      : string(instanceID),
-      Name    : string(serviceName),
+      ID      : instanceID,
+      Name    : serviceName,
       Port    : port,
       Check   : &consul.AgentServiceCheck{
-        CheckID : string(instanceID),
+        CheckID : instanceID,
         TTL     : fmt.Sprintf(
           "%ds", 
           discovery.HealthCheckInterval,
@@ -65,16 +65,16 @@ func(r *Registry) Register(
 // Deregister removes a service revord in the consul-based registry.
 func(r *Registry) Deregister(
   ctx         context.Context, 
-  instanceID  discovery.InstanceID, 
-  _           discovery.ServiceName,
+  instanceID  string, 
+  _           string,
 ) error {
-  return r.client.Agent().ServiceDeregister(string(instanceID))
+  return r.client.Agent().ServiceDeregister(instanceID)
 }
 
 // ServiceAddresses returns the list of addresses of active instances of the given service id.
 func(r *Registry) ServiceAddresses(
-  ctx context.Context, 
-  serviceName discovery.ServiceName,
+  ctx         context.Context, 
+  serviceName string,
 )( []string, error) {
   entries, _, err := r.client.Health().Service(
     string(serviceName),
@@ -106,16 +106,16 @@ func(r *Registry) ServiceAddresses(
 
 // ReportHealthyState is a mechanism for reporting the health status of the given instance to the registry.
 func(r *Registry) ReportHealthyState(
-  instanceID  discovery.InstanceID, 
-  serviceName discovery.ServiceName,
+  instanceID  string, 
+  serviceName string,
 ) error {
   r.client.Agent().PassTTL(
-    string(instanceID),
+    instanceID,
     "",
   )
   // TODO: Look more into UpdateTTL -- Find better examples of this newer API.
   return r.client.Agent().UpdateTTL(
-    string(instanceID),
+    instanceID,
     "",
     "pass",
   )
