@@ -24,11 +24,10 @@ func(h *Handler) Handle(
   ep := endpoint.String()
   if ep == "unknown" {
     return handler.ErrUnknownEndpoint
-
   }
 
   http.Handle(
-    ep,
+    "/"+ep,
     http.HandlerFunc(handlerFunc),
   )
 

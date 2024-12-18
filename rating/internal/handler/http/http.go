@@ -26,7 +26,7 @@ func(h *Handler) Handle(
     return handler.ErrUnknownEndpoint
   }
   http.Handle(
-    ep,
+    "/"+ep,
     http.HandlerFunc(handlerFunc),
   )
   return nil

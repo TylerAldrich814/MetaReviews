@@ -5,6 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
 	"time"
 
 	"github.com/TylerAldrich814/MetaMovies/common"
@@ -25,6 +27,14 @@ var (
 )
 
 func main(){
+  log.Printf(" ->> METADATA SERVICE <<- ")
+
+  ctx, cancel := signal.NotifyContext(
+    context.Background(),
+    os.Interrupt,
+  )
+  defer cancel()
+
   var port int
   
   flag.IntVar(&port, "port", 8081, "API Habdler Port")
@@ -39,7 +49,6 @@ func main(){
       err,
     ))
   }
-  ctx := context.Background()
 
   instanceID := discovery.GenerateInstanceID(serviceName)
   if err := registry.Register(
@@ -47,7 +56,7 @@ func main(){
     instanceID,
     serviceName,
     fmt.Sprintf(
-      "localhost:%s",
+      "localhost:%d",
       port,
     ),
   ); err != nil {
@@ -69,30 +78,43 @@ func main(){
       time.Sleep(1 * time.Second)
     }
   }()
-  defer registry.Deregister(
-    ctx,
-    instanceID,
-    serviceName,
-  )
 
   repo := memory.New()
   svc  := metadata.New(repo)
   h    := httphandler.New(svc)
 
-  if err := h.Handle(
-    endpoint.MetadataEndpoint,
-    h.GetMetadata,
-  ); err != nil {
-    log.Fatalf(
-      "Failed to handle HTTP endpoint \"%s\" - %v\n",
-      endpoint.MetadataEndpoint.String(),
-      err,
-    )
-  }
-  if err := h.ListenAndServe(
-    httpPort,
-    nil,
-  ); err != nil {
+  ch := make(chan error, 1)
+  go func(){
+    if err := h.Handle(
+      endpoint.MetadataEndpoint,
+      h.GetMetadata,
+    ); err != nil {
+      ch <- fmt.Errorf(
+        "Failed to handle HTTP endpoint \"%s\" - %v\n",
+        endpoint.MetadataEndpoint.String(),
+        err,
+      )
+    }
+    if err := h.ListenAndServe(
+      httpPort,
+      nil,
+    ); err != nil {
+      ch <- fmt.Errorf(
+        "Failed to Listen&Serve: %v\n",
+        err,
+      )
+    }
+  }()
+
+  select {
+  case err := <-ch:
     panic(err)
+  case <-ctx.Done():
+    log.Printf("->> GRAEFULLY SHUTTING DOWN")
+    registry.Deregister(
+      ctx,
+      instanceID,
+      serviceName,
+    )
   }
 }

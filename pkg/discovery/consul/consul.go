@@ -1,13 +1,14 @@
 package consul
 
 import (
-  "context"
-  "fmt"
-  "strconv"
-  "strings"
+	"context"
+	"fmt"
+	"log"
+	"strconv"
+	"strings"
 
-  consul "github.com/hashicorp/consul/api"
-  "github.com/TylerAldrich814/MetaMovies/pkg/discovery"
+	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
+	consul "github.com/hashicorp/consul/api"
 )
 
 // Registry defines a Consul-based service registry.
@@ -47,9 +48,9 @@ func(r *Registry) Register(
 
   return r.client.Agent().ServiceRegister(
     &consul.AgentServiceRegistration{
-      Address : parts[0],
-      ID      : instanceID,
       Name    : serviceName,
+      ID      : instanceID,
+      Address : parts[0],
       Port    : port,
       Check   : &consul.AgentServiceCheck{
         CheckID : instanceID,
@@ -66,8 +67,9 @@ func(r *Registry) Register(
 func(r *Registry) Deregister(
   ctx         context.Context, 
   instanceID  string, 
-  _           string,
+  serviceName string,
 ) error {
+  log.Printf("Deregistering %s instance.", serviceName)
   return r.client.Agent().ServiceDeregister(instanceID)
 }
 

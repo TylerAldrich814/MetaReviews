@@ -37,8 +37,8 @@ func(g *Gateway) getURL(
   if len(addrs) == 0 {
     return "", discovery.ErrNotFound
   }
-  return fmt.Sprint(
-    "http:/%s/metadata",
+  return fmt.Sprintf(
+    "http://%s/metadata",
     addrs[rand.Intn(len(addrs))],
   ), nil
 }

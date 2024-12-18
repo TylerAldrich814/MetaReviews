@@ -37,8 +37,8 @@ func(g *Gateway) getURL(
   if len(addrs) == 0 {
     return "", discovery.ErrNotFound
   }
-  return fmt.Sprint(
-    "http:/%s/review",
+  return fmt.Sprintf(
+    "http://%s/review",
     addrs[rand.Intn(len(addrs))],
   ), nil
 }
@@ -58,7 +58,7 @@ func(g *Gateway) GetAggregatedRating(
     return 0, nil
   }
   url := fmt.Sprintf(
-    "http:/%s/rating",
+    "http://%s/rating",
     addrs[rand.Intn(len(addrs))],
   )
   log.Printf("Calling rating service. Request: GET %s\n", url)

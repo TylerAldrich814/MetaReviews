@@ -25,7 +25,7 @@ func(h *Handler) Handle(
     return handler.ErrUnknownEndpoint
   }
   http.Handle(
-    ep,
+    "/"+ep,
     http.HandlerFunc(handlerfunc),
   )
   return nil
@@ -52,6 +52,7 @@ func(h *Handler) GetMoviewDetails(
   req *http.Request,
 ) {
   id := req.FormValue("id")
+  log.Printf("GetMoviewDetails: id= %s", id)
   details, err := h.ctrl.Get(req.Context(), id)
   if err != nil {
     if errors.Is(err, movie.ErrNotFound){

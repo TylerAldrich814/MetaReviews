@@ -5,6 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
 	"time"
 
 	"github.com/TylerAldrich814/MetaMovies/common"
@@ -21,13 +23,26 @@ import (
 
 var (
   serviceName  = "movie"
-  consoleAddr  = "localhost:8500"
+  consulAddr  = "localhost:8500"
   metadataAddr = common.EnvString("METADATA_ADDR", "localhost:8081")
   ratingAddr   = common.EnvString("RATING_ADDR", "localhost:8082")
   movieAddr    = common.EnvString("MOVIE_ADDR", "localhost:8083")
 )
 
 func main(){
+  log.Printf(" ->> MOVIE SERVICE <<- ")
+  defer func(){
+    if r := recover(); r != nil {
+      log.Printf("Recovered from panic: %v", r)
+    }
+  }()
+
+  ctx, cancel := signal.NotifyContext(
+    context.Background(),
+    os.Interrupt,
+  )
+  defer cancel()
+
   var port int
 
   flag.IntVar(&port, "port", 8083, "API Handler Port")
@@ -36,14 +51,13 @@ func main(){
 
   addr := fmt.Sprintf("localhost:%d", port)
 
-  registry, err := consul.NewRegistry(addr)
+  registry, err := consul.NewRegistry(consulAddr)
   if err != nil {
     panic(fmt.Sprintf(
       "->> Failed to create a new Movie Service Consul Registry:: %v\n",
       err,
     ))
   }
-  ctx := context.Background()
 
   instanceID := discovery.GenerateInstanceID(serviceName)
   if err := registry.Register(
@@ -69,11 +83,6 @@ func main(){
       time.Sleep(1 * time.Second)
     }
   }()
-  defer registry.Deregister(
-    ctx,
-    instanceID,
-    serviceName,
-  )
 
   ratingGateway   := ratinggateway.New(registry)
   metadataGateway := metadatagateway.New(registry)
@@ -81,45 +90,40 @@ func main(){
   svc := movie.New(ratingGateway, metadataGateway)
   h := httphandler.New(svc)
 
-  if err := h.Handle(
-    endpoint.MovieEndpoint,
-    h.GetMoviewDetails,
-  ); err != nil {
-    panic(fmt.Sprintf(
-      "Failed to handle HTTP endpoint \"%s\"",
-      endpoint.MovieEndpoint.String(),
-      err,
-    ))
-  }
-  if err := h.ListenAndServe(
-    fmt.Sprintf(":%s", port),
-    nil,
-  ); err != nil {
-    panic(fmt.Sprintf(
-      "->> Failed to Create Move HTTP Server: %v\n",
-      err,
-    ))
+  ch := make(chan error, 1)
+
+  go func(){
+    if err := h.Handle(
+      endpoint.MovieEndpoint,
+      h.GetMoviewDetails,
+    ); err != nil {
+      ch<- fmt.Errorf(
+        "Failed to handle HTTP endpoint \"%s\"",
+        endpoint.MovieEndpoint.String(),
+        err,
+      )
+    }
+
+    if err := h.ListenAndServe(
+      fmt.Sprintf(":%d", port),
+      nil,
+    ); err != nil {
+      ch<-fmt.Errorf(
+        "->> Failed to Create Move HTTP Server: %v\n",
+        err,
+      )
+    }
+  }()
+
+  select {
+  case err := <-ch:
+    panic(err)
+  case <-ctx.Done():
+    log.Printf("->> GRAEFULLY SHUTTING DOWN")
+    registry.Deregister(
+      ctx,
+      instanceID,
+      serviceName,
+    )
   }
 }
-
-// func ldmain(){
-//   log.Printf(" ->> Starting the Movie Service @ %s..\n", movieAddr)
-//
-//   metadataGateway := metadatagateway.New(metadataAddr)
-//   ratingGateway   := ratinggateway.New(ratingAddr)
-//   ctrl := movie.New(ratingGateway, metadataGateway)
-//   h := httphandler.New(ctrl)
-//
-//   if err := h.Handle(
-//     endpoint.MovieEndpoint,
-//     h.GetMoviewDetails,
-//   ); err != nil {
-//     panic(err)
-//   }
-//   if err := h.ListenAndServe(
-//     movieAddr,
-//     nil,
-//   ); err != nil {
-//     panic(err)
-//   }
-// }

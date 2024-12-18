@@ -6,3 +6,4 @@
 /**/*/.air.toml
 
 go.work.sum
+global.hcl
