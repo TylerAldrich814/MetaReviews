@@ -1,0 +1,4 @@
+# rating/configs/base.yaml
+
+api:
+  Port: 8082

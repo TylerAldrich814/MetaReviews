@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -19,6 +18,7 @@ import (
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery/consul"
 	"google.golang.org/grpc"
+	"gopkg.in/yaml.v3"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -33,6 +33,19 @@ var (
 
 func main(){
   log.Printf(" ->> MOVIE SERVICE <<- ")
+
+  f, err := os.Open("configs/base.yaml")
+  if err != nil {
+    panic(err)
+  }
+  defer f.Close()
+
+  var cfg serviceConfig
+  if err := yaml.NewDecoder(f).Decode(&cfg); err != nil {
+    panic(err)
+  }
+  port := cfg.APIConfig.Port
+
   defer func(){
     if r := recover(); r != nil {
       log.Printf("Recovered from panic: %v", r)
@@ -44,12 +57,6 @@ func main(){
     os.Interrupt,
   )
   defer cancel()
-
-  var port int
-
-  flag.IntVar(&port, "port", 8083, "API Handler Port")
-  flag.Parse()
-  log.Printf("Starting the Movie Service on port %d\n", port)
 
   addr := fmt.Sprintf("localhost:%d", port)
 

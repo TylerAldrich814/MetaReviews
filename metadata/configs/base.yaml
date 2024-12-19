@@ -1,0 +1,4 @@
+# metadata/configs/base.yaml
+
+api:
+  port: 8081

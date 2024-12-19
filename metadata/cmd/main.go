@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -10,11 +9,11 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/TylerAldrich814/MetaMovies/common"
 	"github.com/TylerAldrich814/MetaMovies/common/gen"
 	"github.com/TylerAldrich814/MetaMovies/metadata/internal/controller/metadata"
 	grpcHandler "github.com/TylerAldrich814/MetaMovies/metadata/internal/handler/grpc"
 	"google.golang.org/grpc"
+	"gopkg.in/yaml.v3"
 
 	"github.com/TylerAldrich814/MetaMovies/metadata/internal/repository/memory"
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
@@ -26,22 +25,28 @@ import (
 var (
   serviceName = "metadata"
   consulAddr  = "localhost:8500"
-  httpPort    = common.EnvString("HTTP_PORT", ":8081")
 )
 
 func main(){
   log.Printf(" ->> METADATA SERVICE <<- ")
+
+  f, err := os.Open("configs/base.yaml")
+  if err != nil {
+    panic(err)
+  }
+  defer f.Close()
+
+  var cfg serviceConfig
+  if err := yaml.NewDecoder(f).Decode(&cfg); err != nil {
+    panic(err)
+  }
+  port := cfg.APIConfig.Port
 
   ctx, cancel := signal.NotifyContext(
     context.Background(),
     os.Interrupt,
   )
   defer cancel()
-
-  var port int
-  
-  flag.IntVar(&port, "port", 8081, "API Habdler Port")
-  flag.Parse()
 
   log.Printf("Starting the metadata service on port %d\n", port)
 
@@ -56,12 +61,9 @@ func main(){
   instanceID := discovery.GenerateInstanceID(serviceName)
   if err := registry.Register(
     ctx, 
-    instanceID,
-    serviceName,
-    fmt.Sprintf(
-      "localhost:%d",
-      port,
-    ),
+    instanceID, 
+    serviceName, 
+    fmt.Sprintf("localhost:%d", port),
   ); err != nil {
     panic(fmt.Sprintf(
       "->> Failed to register Metadata Service with Consul Registery: %v\n",
@@ -85,11 +87,16 @@ func main(){
   repo := memory.New()
   svc  := metadata.New(repo)
   h    := grpcHandler.New(svc)
-  grpcAddr := fmt.Sprintf("localhost:%d", port)
+  ch   := make(chan error, 1)
 
-  ch := make(chan error, 1)
   go func(){
-    lis, err := net.Listen("tcp", grpcAddr)
+    lis, err := net.Listen(
+      "tcp", 
+      fmt.Sprintf(
+        "localhost:%d",
+        port,
+      ),
+    )
     if err != nil {
       ch <- fmt.Errorf(
         "failed to start tcp listener: %v\n",

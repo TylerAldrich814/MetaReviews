@@ -1,0 +1,4 @@
+# movie/configs/base.yaml
+
+api:
+  port: 8083
