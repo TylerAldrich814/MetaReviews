@@ -1,8 +1,25 @@
 version: "3.9"
 services:
+  mysql:
+    image: mysql:8.0
+    container_name: MetaMovieContainer
+    restart: always
+    environment: 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: MetaMovieDB
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    volumes:
+      - meta_movie_data:/var/lib/mysql
+
   consul:
     image: hashicorp/consul
     command: agent -server -ui -node=server-1 -bootstrap-expect=1 -client=0.0.0.0
     ports:
       - 8500:8500
       - 8600:8600/udp
+
+volumes:
+  meta_movie_data:

@@ -16,7 +16,8 @@ import (
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery/consul"
 	"github.com/TylerAldrich814/MetaMovies/rating/internal/controller/rating"
 	grpcHandler "github.com/TylerAldrich814/MetaMovies/rating/internal/handler/grpc"
-	"github.com/TylerAldrich814/MetaMovies/rating/internal/repository/memory"
+	"github.com/TylerAldrich814/MetaMovies/rating/internal/repository/mysql"
+  "google.golang.org/grpc/reflection"
 
 	_ "github.com/joho/godotenv/autoload"
 	"google.golang.org/grpc"
@@ -86,8 +87,11 @@ func main(){
     }
   }()
 
-  repo := memory.New()
-  ctrl := rating.New(repo)
+  repo, err := mysql.New()
+  if err != nil {
+    panic(err)
+  }
+  ctrl := rating.New(repo, nil)
   h    := grpcHandler.New(ctrl)
   grpcAddr := fmt.Sprintf(
     "localhost:%d",
@@ -105,6 +109,8 @@ func main(){
       return
     }
     srv := grpc.NewServer()
+    reflection.Register(srv)
+
     gen.RegisterRatingServiceServer(srv, h)
 
     if err := srv.Serve(lis); err != nil {
