@@ -8,18 +8,28 @@ import (
 	"github.com/TylerAldrich814/MetaMovies/rating/pkg/model"
 )
 
+var ErrNotFound = errors.New("rating not found for record")
+
 type ratingRepository = interface {
   Get(ctx context.Context, recordID model.RecordID, recordType model.RecordType)( []model.Rating, error )
   Put(ctx context.Context, recordID model.RecordID, recordType model.RecordType, rating *model.Rating) error
 }
 
+type ratingIngester interface {
+  Ingest(context.Context)( chan model.RatingEvent,error )
+}
+
 type Controller struct {
-  repo ratingRepository
+  repo     ratingRepository
+  injester ratingIngester
 }
 
 // New returns a Service Rating Controller
-func New(repo ratingRepository) *Controller {
-  return &Controller{ repo }
+func New(
+  repo     ratingRepository,
+  ingester ratingIngester,
+) *Controller {
+  return &Controller{ repo, ingester }
 }
 
 // GetAggregatedRating returns the aggregated rating for a record 
@@ -31,7 +41,7 @@ func(c *Controller) GetAggregatedRating(
 )( float64, error ){
   ratings, err := c.repo.Get(ctx, recordID, recordType)
   if err != nil && errors.Is(err, repository.ErrNotFound){
-    return 0, repository.ErrNotFound
+    return 0, ErrNotFound
   }
   if err != nil {
     return 0, err
@@ -52,4 +62,28 @@ func(c *Controller) PutRating(
   rating     *model.Rating,
 ) error {
   return c.repo.Put(ctx, recordID, recordType, rating)
+}
+
+func(c *Controller) StartIngestion(
+  ctx context.Context,
+) error {
+  ch, err := c.injester.Ingest(ctx)
+  if err != nil {
+    return err
+  }
+  for e := range ch {
+    if err := c.PutRating(
+      ctx,
+      e.RecordID,
+      e.RecordType,
+      &model.Rating{
+        UserID : e.UserID,
+        Value  : e.Value,
+      },
+    ); err != nil {
+      return err
+    }
+  }
+
+  return nil
 }

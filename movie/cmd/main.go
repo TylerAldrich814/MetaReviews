@@ -5,18 +5,20 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/TylerAldrich814/MetaMovies/common"
-	"github.com/TylerAldrich814/MetaMovies/common/endpoint"
+	"github.com/TylerAldrich814/MetaMovies/common/gen"
 	"github.com/TylerAldrich814/MetaMovies/movie/internal/controller/movie"
 	metadatagateway "github.com/TylerAldrich814/MetaMovies/movie/internal/gateway/metadata/http"
 	ratinggateway "github.com/TylerAldrich814/MetaMovies/movie/internal/gateway/rating/http"
-	httphandler "github.com/TylerAldrich814/MetaMovies/movie/internal/handler/http"
+	grpchandler "github.com/TylerAldrich814/MetaMovies/movie/internal/handler/grpc"
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery/consul"
+	"google.golang.org/grpc"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -87,29 +89,29 @@ func main(){
   ratingGateway   := ratinggateway.New(registry)
   metadataGateway := metadatagateway.New(registry)
 
-  svc := movie.New(ratingGateway, metadataGateway)
-  h := httphandler.New(svc)
+  ctrl := movie.New(ratingGateway, metadataGateway)
+  h := grpchandler.New(ctrl)
+
+  grpcAddr := fmt.Sprintf(
+    "localhost:%d",
+    port,
+  )
 
   ch := make(chan error, 1)
-
   go func(){
-    if err := h.Handle(
-      endpoint.MovieEndpoint,
-      h.GetMoviewDetails,
-    ); err != nil {
-      ch<- fmt.Errorf(
-        "Failed to handle HTTP endpoint \"%s\"",
-        endpoint.MovieEndpoint.String(),
-        err,
+    lis, err := net.Listen("tcp", grpcAddr)
+    if err != nil {
+      ch <- fmt.Errorf(
+        "failed to start grpc listener: %v\n",
       )
+      return
     }
+    srv := grpc.NewServer()
+    gen.RegisterMovieServiceServer(srv, h)
 
-    if err := h.ListenAndServe(
-      fmt.Sprintf(":%d", port),
-      nil,
-    ); err != nil {
-      ch<-fmt.Errorf(
-        "->> Failed to Create Move HTTP Server: %v\n",
+    if err := srv.Serve(lis); err != nil {
+      ch <- fmt.Errorf(
+        "failed to listen on rating grpc service server: %v\n",
         err,
       )
     }
@@ -117,6 +119,11 @@ func main(){
 
   select {
   case err := <-ch:
+    registry.Deregister(
+      ctx,
+      instanceID,
+      serviceName,
+    )
     panic(err)
   case <-ctx.Done():
     log.Printf("->> GRAEFULLY SHUTTING DOWN")

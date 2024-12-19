@@ -8,3 +8,6 @@ cmd/sizecompare
 
 go.work.sum
 global.hcl
+
+## Generated gRPC Go Code:
+common/mod/*

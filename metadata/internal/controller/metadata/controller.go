@@ -8,6 +8,8 @@ import (
 	"github.com/TylerAldrich814/MetaMovies/metadata/pkg/model"
 )
 
+var ErrNotFound = errors.New("not found")
+
 type metadataRepository interface {
   Get(ctx context.Context, id string)( *model.Metadata, error )
 }
@@ -29,7 +31,7 @@ func(c *Controller) Get(
 )( *model.Metadata, error){
   res, err := c.repo.Get(ctx, id)
   if err != nil && errors.Is(err, repository.ErrNotFound){
-    return nil, repository.ErrNotFound
+    return nil, ErrNotFound
   }
 
   return res, nil

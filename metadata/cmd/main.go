@@ -5,14 +5,17 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/TylerAldrich814/MetaMovies/common"
-	"github.com/TylerAldrich814/MetaMovies/common/endpoint"
+	"github.com/TylerAldrich814/MetaMovies/common/gen"
 	"github.com/TylerAldrich814/MetaMovies/metadata/internal/controller/metadata"
-	httphandler "github.com/TylerAldrich814/MetaMovies/metadata/internal/handler/http"
+	grpcHandler "github.com/TylerAldrich814/MetaMovies/metadata/internal/handler/grpc"
+	"google.golang.org/grpc"
+
 	"github.com/TylerAldrich814/MetaMovies/metadata/internal/repository/memory"
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery/consul"
@@ -81,26 +84,24 @@ func main(){
 
   repo := memory.New()
   svc  := metadata.New(repo)
-  h    := httphandler.New(svc)
+  h    := grpcHandler.New(svc)
+  grpcAddr := fmt.Sprintf("localhost:%d", port)
 
   ch := make(chan error, 1)
   go func(){
-    if err := h.Handle(
-      endpoint.MetadataEndpoint,
-      h.GetMetadata,
-    ); err != nil {
+    lis, err := net.Listen("tcp", grpcAddr)
+    if err != nil {
       ch <- fmt.Errorf(
-        "Failed to handle HTTP endpoint \"%s\" - %v\n",
-        endpoint.MetadataEndpoint.String(),
+        "failed to start tcp listener: %v\n",
         err,
       )
+      return
     }
-    if err := h.ListenAndServe(
-      httpPort,
-      nil,
-    ); err != nil {
+    svc := grpc.NewServer()
+    gen.RegisterMetadataServiceServer(svc, h)
+    if err := svc.Serve(lis); err != nil {
       ch <- fmt.Errorf(
-        "Failed to Listen&Serve: %v\n",
+        "failed to serve grpc server: %v\n",
         err,
       )
     }
@@ -108,6 +109,11 @@ func main(){
 
   select {
   case err := <-ch:
+    registry.Deregister(
+      ctx,
+      instanceID,
+      serviceName,
+    )
     panic(err)
   case <-ctx.Done():
     log.Printf("->> GRAEFULLY SHUTTING DOWN")

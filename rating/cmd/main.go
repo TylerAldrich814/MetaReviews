@@ -1,23 +1,25 @@
 package main
-
+ 
 import (
 	"context"
 	"flag"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/TylerAldrich814/MetaMovies/common"
-	"github.com/TylerAldrich814/MetaMovies/common/endpoint"
+	"github.com/TylerAldrich814/MetaMovies/common/gen"
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery/consul"
-	controller "github.com/TylerAldrich814/MetaMovies/rating/internal/controller/rating"
-	httphandler "github.com/TylerAldrich814/MetaMovies/rating/internal/handler/http"
+	"github.com/TylerAldrich814/MetaMovies/rating/internal/controller/rating"
+	grpcHandler "github.com/TylerAldrich814/MetaMovies/rating/internal/handler/grpc"
 	"github.com/TylerAldrich814/MetaMovies/rating/internal/repository/memory"
 
 	_ "github.com/joho/godotenv/autoload"
+	"google.golang.org/grpc"
 )
 
 var (
@@ -85,28 +87,29 @@ func main(){
   }()
 
   repo := memory.New()
-  svc  := controller.New(repo)
-  h    := httphandler.New(svc)
+  ctrl := rating.New(repo)
+  h    := grpcHandler.New(ctrl)
+  grpcAddr := fmt.Sprintf(
+    "localhost:%d",
+    port,
+  )
 
   ch := make(chan error, 1)
   go func(){
-    if err := h.Handle(
-      endpoint.RatingEndpoint,
-      h.HandleReq,
-    ); err != nil {
-      ch<-fmt.Errorf(
-        "Failed to handle HTTP endpoint \"%s\"",
-        endpoint.MovieEndpoint.String(),
+    lis, err := net.Listen("tcp", grpcAddr)
+    if err != nil {
+      ch <- fmt.Errorf(
+        "failed to start grpc listener: %v\n",
         err,
       )
+      return
     }
+    srv := grpc.NewServer()
+    gen.RegisterRatingServiceServer(srv, h)
 
-    if err := h.ListenAndServe(
-      fmt.Sprintf(":%d", port),
-      nil,
-    ); err != nil {
-      ch<-fmt.Errorf(
-        "->> Failed to Create Movie HTTP Server: %v\n",
+    if err := srv.Serve(lis); err != nil {
+      ch <- fmt.Errorf(
+        "failed to listen on rating grpc service server: %v\n",
         err,
       )
     }
@@ -114,6 +117,11 @@ func main(){
 
   select {
   case err := <-ch:
+    registry.Deregister(
+      ctx,
+      instanceID,
+      serviceName,
+    )
     panic(err)
   case <-ctx.Done():
     log.Printf("->> GRAEFULLY SHUTTING DOWN")
