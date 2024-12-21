@@ -7,13 +7,13 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
+	"github.com/TylerAldrich814/MetaReviews/pkg/discovery"
 	consul "github.com/hashicorp/consul/api"
 )
 
 // Registry defines a Consul-based service registry.
 //
-// Registry implements the MetaMovies/pkg/discovery/Registry interface
+// Registry implements the MetaReviews/pkg/discovery/Registry interface
 type Registry struct {
   client *consul.Client
 }

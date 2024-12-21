@@ -4,10 +4,10 @@ import (
 	"context"
 	"errors"
 
-	metadatamodel "github.com/TylerAldrich814/MetaMovies/metadata/pkg/model"
-	"github.com/TylerAldrich814/MetaMovies/movie/internal/gateway"
-	"github.com/TylerAldrich814/MetaMovies/movie/pkg/model"
-	ratingmodel "github.com/TylerAldrich814/MetaMovies/rating/pkg/model"
+	metadatamodel "github.com/TylerAldrich814/MetaReviews/metadata/pkg/model"
+	"github.com/TylerAldrich814/MetaReviews/movie/internal/gateway"
+	"github.com/TylerAldrich814/MetaReviews/movie/pkg/model"
+	ratingmodel "github.com/TylerAldrich814/MetaReviews/rating/pkg/model"
 )
 
 var ErrNotFound = errors.New("movie metadata not found")

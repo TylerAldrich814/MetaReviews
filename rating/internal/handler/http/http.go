@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/TylerAldrich814/MetaMovies/common"
-	"github.com/TylerAldrich814/MetaMovies/common/endpoint"
-	"github.com/TylerAldrich814/MetaMovies/rating/internal/controller/rating"
-	"github.com/TylerAldrich814/MetaMovies/rating/internal/handler"
-	"github.com/TylerAldrich814/MetaMovies/rating/pkg/model"
+	"github.com/TylerAldrich814/MetaReviews/common"
+	"github.com/TylerAldrich814/MetaReviews/common/endpoint"
+	"github.com/TylerAldrich814/MetaReviews/rating/internal/controller/rating"
+	"github.com/TylerAldrich814/MetaReviews/rating/internal/handler"
+	"github.com/TylerAldrich814/MetaReviews/rating/pkg/model"
 )
 
 // Handler defines a rating service controller

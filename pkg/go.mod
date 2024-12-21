@@ -1,4 +1,4 @@
-module github.com/TylerAldrich814/MetaMovies/pkg
+module github.com/TylerAldrich814/MetaReviews/pkg
 
 go 1.23.4
 

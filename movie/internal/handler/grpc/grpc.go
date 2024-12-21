@@ -4,9 +4,9 @@ import (
 	"context"
 	"errors"
 
-	"github.com/TylerAldrich814/MetaMovies/common/gen"
-	"github.com/TylerAldrich814/MetaMovies/metadata/pkg/model"
-	"github.com/TylerAldrich814/MetaMovies/movie/internal/controller/movie"
+	"github.com/TylerAldrich814/MetaReviews/common/gen"
+	"github.com/TylerAldrich814/MetaReviews/metadata/pkg/model"
+	"github.com/TylerAldrich814/MetaReviews/movie/internal/controller/movie"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

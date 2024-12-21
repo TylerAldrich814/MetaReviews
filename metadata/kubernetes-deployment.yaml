@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: metadata
-        image: aldrich814/metamovie_metadata:latest
+        image: aldrich814/metareviews_metadata:0.1.0
         imagePullPolicy: IfNotPresent
         ports:
           - containerPort: 8082

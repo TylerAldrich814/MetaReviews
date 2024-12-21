@@ -3,10 +3,10 @@ package grpc
 import (
 	"context"
 
-	"github.com/TylerAldrich814/MetaMovies/common/gen"
-	"github.com/TylerAldrich814/MetaMovies/common/grpcutil"
-	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
-	"github.com/TylerAldrich814/MetaMovies/rating/pkg/model"
+	"github.com/TylerAldrich814/MetaReviews/common/gen"
+	"github.com/TylerAldrich814/MetaReviews/common/grpcutil"
+	"github.com/TylerAldrich814/MetaReviews/pkg/discovery"
+	"github.com/TylerAldrich814/MetaReviews/rating/pkg/model"
 )
 
 // Gateway defines a gRPC Gateway for a Rating Service.

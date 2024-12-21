@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-  "github.com/TylerAldrich814/MetaMovies/pkg/discovery"
+  "github.com/TylerAldrich814/MetaReviews/pkg/discovery"
 )
 
 type InMemoryRegistry = map[string]map[string]*serviceInstance
@@ -16,7 +16,7 @@ type serviceInstance struct {
 }
 
 
-// Registry implements the MetaMovies/pkg/discovery/Registry interface
+// Registry implements the MetaReviews/pkg/discovery/Registry interface
 // Registry holds mapped data for all Registered Service Instances.
 // Used for testing or when this applicaiton is running on a simple 
 // Server, where a heavy-duty discovery layer isn't quite needed.

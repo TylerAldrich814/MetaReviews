@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/TylerAldrich814/MetaMovies/rating/pkg/model"
+	"github.com/TylerAldrich814/MetaReviews/rating/pkg/model"
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 

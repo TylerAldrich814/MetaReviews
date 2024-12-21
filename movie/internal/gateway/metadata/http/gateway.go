@@ -8,10 +8,10 @@ import (
 	"math/rand"
 	"net/http"
 
-	"github.com/TylerAldrich814/MetaMovies/common/endpoint"
-	"github.com/TylerAldrich814/MetaMovies/metadata/pkg/model"
-	"github.com/TylerAldrich814/MetaMovies/movie/internal/gateway"
-	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
+	"github.com/TylerAldrich814/MetaReviews/common/endpoint"
+	"github.com/TylerAldrich814/MetaReviews/metadata/pkg/model"
+	"github.com/TylerAldrich814/MetaReviews/movie/internal/gateway"
+	"github.com/TylerAldrich814/MetaReviews/pkg/discovery"
 )
 
 // Gateway defines a movie metadata HTTP gateway.

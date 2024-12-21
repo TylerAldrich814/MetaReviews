@@ -9,12 +9,12 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/TylerAldrich814/MetaMovies/common/gen"
-	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
-	"github.com/TylerAldrich814/MetaMovies/pkg/discovery/consul"
-	"github.com/TylerAldrich814/MetaMovies/rating/internal/controller/rating"
-	grpcHandler "github.com/TylerAldrich814/MetaMovies/rating/internal/handler/grpc"
-	"github.com/TylerAldrich814/MetaMovies/rating/internal/repository/mysql"
+	"github.com/TylerAldrich814/MetaReviews/common/gen"
+	"github.com/TylerAldrich814/MetaReviews/pkg/discovery"
+	"github.com/TylerAldrich814/MetaReviews/pkg/discovery/consul"
+	"github.com/TylerAldrich814/MetaReviews/rating/internal/controller/rating"
+	grpcHandler "github.com/TylerAldrich814/MetaReviews/rating/internal/handler/grpc"
+	"github.com/TylerAldrich814/MetaReviews/rating/internal/repository/mysql"
 	"google.golang.org/grpc/reflection"
 	"gopkg.in/yaml.v3"
 

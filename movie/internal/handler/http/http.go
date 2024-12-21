@@ -5,10 +5,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/TylerAldrich814/MetaMovies/common"
-	"github.com/TylerAldrich814/MetaMovies/common/endpoint"
-	"github.com/TylerAldrich814/MetaMovies/movie/internal/controller/movie"
-	"github.com/TylerAldrich814/MetaMovies/movie/internal/handler"
+	"github.com/TylerAldrich814/MetaReviews/common"
+	"github.com/TylerAldrich814/MetaReviews/common/endpoint"
+	"github.com/TylerAldrich814/MetaReviews/movie/internal/controller/movie"
+	"github.com/TylerAldrich814/MetaReviews/movie/internal/handler"
 )
 
 // Handler defines a movie handler

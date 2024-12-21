@@ -8,10 +8,10 @@ import (
 	"math/rand"
 	"net/http"
 
-	// "github.com/TylerAldrich814/MetaMovies/common/endpoint"
-	"github.com/TylerAldrich814/MetaMovies/movie/internal/gateway"
-	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
-	"github.com/TylerAldrich814/MetaMovies/rating/pkg/model"
+	// "github.com/TylerAldrich814/MetaReviews/common/endpoint"
+	"github.com/TylerAldrich814/MetaReviews/movie/internal/gateway"
+	"github.com/TylerAldrich814/MetaReviews/pkg/discovery"
+	"github.com/TylerAldrich814/MetaReviews/rating/pkg/model"
 )
 
 // Gateway defines an HTTP gateway for a rating service

@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/TylerAldrich814/MetaMovies/metadata/internal/repository"
-	"github.com/TylerAldrich814/MetaMovies/metadata/pkg/model"
+	"github.com/TylerAldrich814/MetaReviews/metadata/internal/repository"
+	"github.com/TylerAldrich814/MetaReviews/metadata/pkg/model"
 	_ "github.com/go-sql-driver/mysql"
 )
 

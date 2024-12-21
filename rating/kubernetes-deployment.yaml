@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: rating
-        image: aldrich814/metamovie_rating:latest
+        image: aldrich814/metareviews_rating:0.1.0
         imagePullPolicy: IfNotPresent
         ports:
            - containerPort: 808

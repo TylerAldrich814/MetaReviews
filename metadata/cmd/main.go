@@ -9,15 +9,15 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/TylerAldrich814/MetaMovies/common/gen"
-	"github.com/TylerAldrich814/MetaMovies/metadata/internal/controller/metadata"
-	grpcHandler "github.com/TylerAldrich814/MetaMovies/metadata/internal/handler/grpc"
+	"github.com/TylerAldrich814/MetaReviews/common/gen"
+	"github.com/TylerAldrich814/MetaReviews/metadata/internal/controller/metadata"
+	grpcHandler "github.com/TylerAldrich814/MetaReviews/metadata/internal/handler/grpc"
 	"google.golang.org/grpc"
 	"gopkg.in/yaml.v3"
 
-	"github.com/TylerAldrich814/MetaMovies/metadata/internal/repository/memory"
-	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
-	"github.com/TylerAldrich814/MetaMovies/pkg/discovery/consul"
+	"github.com/TylerAldrich814/MetaReviews/metadata/internal/repository/memory"
+	"github.com/TylerAldrich814/MetaReviews/pkg/discovery"
+	"github.com/TylerAldrich814/MetaReviews/pkg/discovery/consul"
 
 	_ "github.com/joho/godotenv/autoload"
 )

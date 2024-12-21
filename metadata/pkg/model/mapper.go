@@ -1,7 +1,7 @@
 package model
 
 import (
-  "github.com/TylerAldrich814/MetaMovies/common/gen"
+  "github.com/TylerAldrich814/MetaReviews/common/gen"
 )
 
 // MetadataToProto converts a Metadata struct into it's 

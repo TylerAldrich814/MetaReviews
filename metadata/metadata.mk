@@ -12,8 +12,8 @@ docker_metadata_build: ## docker_metadata_build - Build Metadata Service Docker 
 docker_metadata_run:  ## docker_metadata_run - Runs the Metadata Service Docker Image. Optional flag=< -it | -d >:: -it = default
 	@$(MAKE) __dk_run S=metadata DIR=$(MKFILE_DIR) PORT=8081 F=$(flag)
 
-docker_metadata_tag: ## docker_metadata_tag - Creates a new Docker Tag: Required VIR=<X.X.X>
-	@$(MAKE) __dk_tag  S=metadata  VIR=$(VIR)
+docker_metadata_tag: ## docker_metadata_tag - Creates a new Docker Tag: Required VER=<X.X.X>
+	@$(MAKE) __dk_tag  S=metadata  VER=$(VER)
 
 docker_metadata_push: ## docker_metadata_push - Updates Metadata Docker Repo: Required: VER=<x.x.x>
-	@$(MAKE) __dk_push S=metadata VIR=$(VIR)
+	@$(MAKE) __dk_push S=metadata  VER=$(VER)

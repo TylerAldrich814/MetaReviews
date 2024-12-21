@@ -1,6 +1,6 @@
 .PHONY: __compile __dk_build __dk_run __dk_tag __dk_push
 
-REPO=aldrich814/metamovie_
+REPO=aldrich814/metareviews_
 
 # ( Internal ): __compile: 
 #  compiles the service's linux binary.
@@ -55,24 +55,26 @@ __dk_run:
 #  Create a Docker Tag for a Service Docker Image.
 #  Requires:
 #   - S=<service_name>
-#   - VIR=<VERSION>
+#   - VER=<VERSION>
 __dk_tag:
-	@if [ "$(VIR)" == "" ]; then                          \
+	@echo "VER $(VER)"
+	@if [ "$(VER)" == "" ]; then                          \
 		echo "Version is Mission: i.e. TAG=1.0.0";          \
 		exit 1;                                             \
-	fi;                                                   \
-	docker tag $S $(REPO)$(S):$(VIR)
+	fi;                                                   
+	@docker tag $S $(REPO)$(S):$(VER)
 
 
 # ( Internal ): __dk_push: 
 #  Pushes the Docker image to the Docker Repository
 #  Requires:
 #   - S=<service_name>
-#   - DIR=<service_dir>
+#   - VER=<VERSION>
 __dk_push:
-	@if [ "$(VIR)" == "" ]; then                          \
-		echo "Version is Mission: i.e. TAG=1.0.0";          \
+	@echo " --- ${VER}"
+	@if [ "$(VER)" = "" ]; then                           \
+		echo "Version is Mission: i.e. VER=1.0.0";          \
 		exit 1;                                             \
-	fi;                                                   \
-	docker push $S $(REPO)$(S):$(VIR)
+	fi                                                   
+	@docker push $(REPO)$(S):$(VER)
 

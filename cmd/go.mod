@@ -1,4 +1,4 @@
-module github.com/TylerAldrich814/MetaMovies/cmd
+module github.com/TylerAldrich814/MetaReviews/cmd
 
 go 1.23.4
 

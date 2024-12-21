@@ -5,11 +5,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/TylerAldrich814/MetaMovies/common"
-	"github.com/TylerAldrich814/MetaMovies/common/endpoint"
-	"github.com/TylerAldrich814/MetaMovies/metadata/internal/controller/metadata"
-	"github.com/TylerAldrich814/MetaMovies/metadata/internal/handler"
-	"github.com/TylerAldrich814/MetaMovies/metadata/internal/repository"
+	"github.com/TylerAldrich814/MetaReviews/common"
+	"github.com/TylerAldrich814/MetaReviews/common/endpoint"
+	"github.com/TylerAldrich814/MetaReviews/metadata/internal/controller/metadata"
+	"github.com/TylerAldrich814/MetaReviews/metadata/internal/handler"
+	"github.com/TylerAldrich814/MetaReviews/metadata/internal/repository"
 )
 
 // Handler defines a movie metadata HTTP Handler.

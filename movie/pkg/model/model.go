@@ -1,6 +1,6 @@
 package model
 
-import "github.com/TylerAldrich814/MetaMovies/metadata/pkg/model"
+import "github.com/TylerAldrich814/MetaReviews/metadata/pkg/model"
 
 // MovieDetails includes movie metadata and it's respective aggregated rating.
 type MovieDetails struct {

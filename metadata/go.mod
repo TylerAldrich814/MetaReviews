@@ -1,4 +1,4 @@
-module github.com/TylerAldrich814/MetaMovies/metadata
+module github.com/TylerAldrich814/MetaReviews/metadata
 
 go 1.23.4
 

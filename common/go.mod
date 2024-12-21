@@ -1,4 +1,4 @@
-module github.com/TylerAldrich814/MetaMovies/common
+module github.com/TylerAldrich814/MetaReviews/common
 
 go 1.23.4
 
