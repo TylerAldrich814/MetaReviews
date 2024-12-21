@@ -9,7 +9,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/TylerAldrich814/MetaMovies/common"
 	"github.com/TylerAldrich814/MetaMovies/common/gen"
 	"github.com/TylerAldrich814/MetaMovies/movie/internal/controller/movie"
 	metadatagateway "github.com/TylerAldrich814/MetaMovies/movie/internal/gateway/metadata/http"
@@ -25,10 +24,6 @@ import (
 
 var (
   serviceName  = "movie"
-  consulAddr  = "localhost:8500"
-  metadataAddr = common.EnvString("METADATA_ADDR", "localhost:8081")
-  ratingAddr   = common.EnvString("RATING_ADDR", "localhost:8082")
-  movieAddr    = common.EnvString("MOVIE_ADDR", "localhost:8083")
 )
 
 func main(){
@@ -60,7 +55,7 @@ func main(){
 
   addr := fmt.Sprintf("localhost:%d", port)
 
-  registry, err := consul.NewRegistry(consulAddr)
+  registry, err := consul.NewRegistry("host.docker.internal:8500")
   if err != nil {
     panic(fmt.Sprintf(
       "->> Failed to create a new Movie Service Consul Registry:: %v\n",

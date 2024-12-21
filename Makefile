@@ -1,28 +1,20 @@
-sql_dev:
-	@docker exec -i MetaMovieContainer mysql \
-		-h localhost -P 3606                   \
-		-protocol=tcp                          \
-		-uroot                                 \
-		-proot_password                        \
-		MetaMovieDB < $(FILE)
+include Docker/docker.mk
+include makefiles/create_service.mk
+include makefiles/services.mk
+include makefiles/consul.mk
+include makefiles/kubernetes.mk
+include metadata/metadata.mk
+include rating/rating.mk
+include movie/movie.mk
 
-sql_schema:
-	@docker exec -i MetaMovieContainer mysql \
-		-uroot                                 \
-		-p$(PASSW)                             \
-		MetaMovieDB < $(FILE)
+.PHONY: help
 
-sql_show_tables:
-	@docker exec -i MetaMovieContainer mysql \
-		MetaMovieDB                            \
-		-h localhost -P 3606                   \
-		-protocol=tcp                          \
-		-uroot                                 \
-		-proot_password                        \
-		-e "SHOW tables"
+## Was gonna make a service creation tool. But, I feel task would be better suited for Go.
+# new_service: ## new_service - Creates a New Go Service direcotry & file structure: requires name=<NAME> port=<XXXX>
+# 	@echo "Creating a new Service $(name)"
+# 	@$(MAKE) __create_new_service NAME=$(name) PORT=$(port)
 
 help:
-	@echo "Usage:"
-	@echo "  ## sql_dev: For running MySQL files on the development DB."
-	@echo " make sql_dev FILE=path/to/sql/schema.sql"
-	@echo " make sql_schema PASSW=<password> FILE=path/to/sql/schema.sql"
+	@echo "Available Commands:"
+	@echo $(MAKEFILE_LIST)
+	@grep -E '^[a-zA-Z_-]+:.*##' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf " - %0s\n", $$2}'

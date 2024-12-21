@@ -21,5 +21,8 @@ services:
       - 8500:8500
       - 8600:8600/udp
 
+networks:
+  meta_movie_backend:
+
 volumes:
   meta_movie_data:

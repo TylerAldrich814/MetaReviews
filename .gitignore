@@ -5,9 +5,11 @@ cmd/sizecompare
 /**/*/go.sum
 /**/*/tmp
 /**/*/.air.toml
+/**/*/build/*
 
 go.work.sum
 global.hcl
 
 ## Generated gRPC Go Code:
 common/mod/*
+old.mk

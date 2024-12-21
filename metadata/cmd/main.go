@@ -24,7 +24,6 @@ import (
 
 var (
   serviceName = "metadata"
-  consulAddr  = "localhost:8500"
 )
 
 func main(){
@@ -50,7 +49,8 @@ func main(){
 
   log.Printf("Starting the metadata service on port %d\n", port)
 
-  registry, err := consul.NewRegistry(consulAddr)
+  // registry, err := consul.NewRegistry("localhost:8500")
+  registry, err := consul.NewRegistry("host.docker.internal:8500")
   if err != nil {
     panic(fmt.Sprintf(
       "->> Failed to create a new Metadata Service Consul Registry:: %v\n",

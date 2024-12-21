@@ -9,7 +9,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/TylerAldrich814/MetaMovies/common"
 	"github.com/TylerAldrich814/MetaMovies/common/gen"
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery"
 	"github.com/TylerAldrich814/MetaMovies/pkg/discovery/consul"
@@ -25,8 +24,6 @@ import (
 
 var (
   serviceName = "rating"
-  consulAddr  = "localhost:8500"
-  httpPort = common.EnvString("HTTP_PORT", ":8082")
 )
 
 func main(){
@@ -57,7 +54,7 @@ func main(){
 
   addr := fmt.Sprintf("localhost:%d", port)
 
-  registry, err := consul.NewRegistry(consulAddr)
+  registry, err := consul.NewRegistry("host.docker.internal:8500")
   if err != nil {
     panic(fmt.Sprintf(
       "->> Failed to create a new Rating Service Consul Registry:: %v\n",
