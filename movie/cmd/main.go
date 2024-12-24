@@ -12,7 +12,7 @@ import (
 	"github.com/TylerAldrich814/MetaReviews/common/gen"
 	"github.com/TylerAldrich814/MetaReviews/movie/internal/controller/movie"
 	metadatagateway "github.com/TylerAldrich814/MetaReviews/movie/internal/gateway/metadata/http"
-	ratinggateway "github.com/TylerAldrich814/MetaReviews/movie/internal/gateway/rating/http"
+	ratinggateway "github.com/TylerAldrich814/MetaReviews/movie/internal/gateway/rating/grpc"
 	grpchandler "github.com/TylerAldrich814/MetaReviews/movie/internal/handler/grpc"
 	"github.com/TylerAldrich814/MetaReviews/pkg/discovery"
 	"github.com/TylerAldrich814/MetaReviews/pkg/discovery/consul"

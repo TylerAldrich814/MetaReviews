@@ -50,11 +50,15 @@ func(h *Handler) GetMovieDetails(
       err.Error(),
     )
   }
+  var rating float64
+  if m.Rating != nil {
+    rating = *m.Rating
+  }
 
   return &gen.GetMovieDetailsResponse{
     MovieDetails : &gen.MovieDetails{
-      Rating   : *m.Rating,
       Metadata : model.MetadataToProto(&m.Metadata),
+      Rating   : rating,
     },
   }, nil
 }
