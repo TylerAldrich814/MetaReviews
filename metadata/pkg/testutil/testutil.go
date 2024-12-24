@@ -1,9 +1,9 @@
 package testutil
 
 import (
-	grpchandler "github.com/TylerAldrich814/MetaReviews/metadata/internal/handler/grpc"
 	"github.com/TylerAldrich814/MetaReviews/common/gen"
 	"github.com/TylerAldrich814/MetaReviews/metadata/internal/controller/metadata"
+	grpchandler "github.com/TylerAldrich814/MetaReviews/metadata/internal/handler/grpc"
 	"github.com/TylerAldrich814/MetaReviews/metadata/internal/repository/memory"
 )
 

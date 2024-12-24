@@ -3,7 +3,6 @@ package metadata
 import (
 	"context"
 	"errors"
-
 	"github.com/TylerAldrich814/MetaReviews/metadata/internal/repository"
 	"github.com/TylerAldrich814/MetaReviews/metadata/pkg/model"
 )
@@ -17,30 +16,31 @@ type metadataRepository interface {
 
 // Controller defines a metadata service controller.
 type Controller struct {
-  repo metadataRepository
+  repo     metadataRepository
 }
 
 // New creates a metadata service controller
 func New(repo metadataRepository) *Controller {
-  return &Controller{ repo }
-}
-
-// Get returns movie metadata via it's ID
-func(c *Controller) Get(
-  ctx context.Context,
-  id  string,
-)( *model.Metadata, error){
-  res, err := c.repo.Get(ctx, id)
-  if err != nil && errors.Is(err, repository.ErrNotFound){
-    return nil, ErrNotFound
-  }
-
-  return res, nil
+  return &Controller{ repo}
 }
 
 func(c *Controller) Put(
   ctx context.Context,
   m   *model.Metadata,
-) error {
+)( error ){
   return c.repo.Put(ctx, m.ID, m)
+}
+
+
+
+// Get returns movie metadata via it's ID
+func(c *Controller) Get(
+  ctx context.Context,
+  id  string,
+)( *model.Metadata,error ){
+  res, err := c.repo.Get(ctx, id)
+  if err != nil && errors.Is(err, repository.ErrNotFound) {
+    return nil, ErrNotFound
+  }
+  return res, nil
 }

@@ -2,6 +2,7 @@ package grpc
 
 import (
 	"context"
+	"time"
 
 	"github.com/TylerAldrich814/MetaReviews/common/gen"
 	"github.com/TylerAldrich814/MetaReviews/common/grpcutil"
@@ -37,12 +38,21 @@ func(g *Gateway) GetAggregatedRating(
   defer conn.Close()
 
   client := gen.NewRatingServiceClient(conn)
-  resp, err := client.GetAggregatedRating(
-    ctx,
-    &gen.GetAggregatedRatingRequest{
-      RecordId   : string(recordID),
-      RecordType : string(recordType),
+
+  maxRetries := 5
+  resp, err := grpcutil.DoRequestWithBackoff(
+    maxRetries,
+    time.Duration(100 * time.Millisecond),
+    func()( *gen.GetAggregatedRatingResponse,error ){
+      return client.GetAggregatedRating(
+        ctx,
+        &gen.GetAggregatedRatingRequest{
+          RecordId   : string(recordID),
+          RecordType : string(recordType),
+        },
+      )
     },
+    grpcutil.ShouldRetry,
   )
   if err != nil {
     return 0, err
@@ -51,6 +61,7 @@ func(g *Gateway) GetAggregatedRating(
   return resp.RatingValue, nil
 }
 
+// PutRating adds a new rating for a given record into the Rating service repository.
 func(g *Gateway) PutRating(
   ctx        context.Context,
   recordID   model.RecordID,
@@ -68,14 +79,23 @@ func(g *Gateway) PutRating(
   defer conn.Close()
 
   client := gen.NewRatingServiceClient(conn)
-  _ , err = client.PutRating(
-    ctx,
-    &gen.PutRatingRequest{
-      UserId      : string(rating.UserID),
-      RecordId    : string(recordID),
-      RecordType  : string(recordType),
-      RatingValue : int32(rating.Value),
+
+  maxRetries := 5
+  _, err = grpcutil.DoRequestWithBackoff(
+    maxRetries,
+    time.Duration(100 * time.Millisecond),
+    func()( *gen.PutRatingResponse,error ){
+      return client.PutRating(
+        ctx,
+        &gen.PutRatingRequest{
+          UserId      : string(rating.UserID),
+          RecordId    : string(recordID),
+          RecordType  : string(recordType),
+          RatingValue : int32(rating.Value),
+        },
+      )
     },
+    grpcutil.ShouldRetry,
   )
 
   return err
